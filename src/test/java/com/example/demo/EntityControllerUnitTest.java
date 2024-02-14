@@ -1,35 +1,22 @@
-
 package com.example.demo;
 
 import static org.mockito.Mockito.when;
-
 import static org.assertj.core.api.Assertions.assertThat;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
 import com.example.demo.controllers.*;
 import com.example.demo.repositories.*;
 import com.example.demo.entities.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-
-
-/** TODO
- * Implement all the unit test in its corresponding class.
- * Make sure to be as exhaustive as possible. Coverage is checked ;)
- */
 
 @WebMvcTest(DoctorController.class)
 class DoctorControllerUnitTest{
@@ -42,6 +29,13 @@ class DoctorControllerUnitTest{
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    /**
+     * Here we are testing the functionality of the controllers in a Spring Boot application, to verify that they behave
+     * as expected when retrieving, creating and deleting data.
+     * The 'MockMvc' framework simulates HTTP requests and tests the responses, using 'mock' objects for the
+     * repositories to simulate interactions with the database.
+     */
 
     @Test
     void shouldGetAllDoctors() throws Exception {

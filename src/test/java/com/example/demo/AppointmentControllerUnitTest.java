@@ -40,7 +40,7 @@ class AppointmentControllerUnitTest{
 
     @Test
     void shouldCreateAppointment() throws Exception {
-        
+
         Patient patient = new Patient("Jose Luis", "Olaya", 37, "j.olaya@email.com");
         Doctor doctor = new Doctor ("Perla", "Amalia", 24, "p.amalia@hospital.accwe");
         Room room = new Room("Dermatology");
@@ -55,7 +55,6 @@ class AppointmentControllerUnitTest{
         mockMvc.perform(post("/api/appointment").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(appointment)))
                 .andExpect(status().isOk());
-                
     }
 
     @Test

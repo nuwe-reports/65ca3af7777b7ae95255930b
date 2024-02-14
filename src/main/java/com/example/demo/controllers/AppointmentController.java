@@ -56,24 +56,23 @@ public class AppointmentController {
     @PostMapping("/appointment")
     public ResponseEntity<?> createAppointment(@RequestBody Appointment appointment) {
 
-        // Validar duración mínima de la cita (por ejemplo, al menos 5 minutos)
+        // Checks if the duration of the appointment is at least 5 minutes. Else, will return a "Bad Request" response.
         if (Duration.between(appointment.getStartsAt(), appointment.getFinishesAt()).toMinutes() < 5) {
             return new ResponseEntity<>("La duración de la cita debe ser al menos de 5 minutos", HttpStatus.BAD_REQUEST);
         } else if (isAppointmentOverlap(appointment)) {
+            // Verifies any possible overlapping. If there is, it returns a "Not Acceptable" response.
             return new ResponseEntity<>("La cita se superpone con otra cita existente", HttpStatus.NOT_ACCEPTABLE);
-        } else { // Would use Try-Catch, but it's not expected in unit test
+        } else { // If everything is correct, it creates the appointment and returns an "OK" response.
             Appointment createdAppointment = appointmentRepository.save(appointment);
             return new ResponseEntity<>(createdAppointment, HttpStatus.OK);
         }
-
     }
 
-    // Método para verificar si hay solapamiento de citas
+    // Check the possible overlapping between appointments by using the "Overlaps" method from the Appointment class.
     private boolean isAppointmentOverlap(Appointment newAppointment) {
         List<Appointment> existingAppointments = appointmentRepository.findAll();
 
         for (Appointment existingAppointment : existingAppointments) {
-            // Verificar solapamiento con otras citas usando el método overlaps
             if (existingAppointment.overlaps(newAppointment)) {
                 return true;
             }

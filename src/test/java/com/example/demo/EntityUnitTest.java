@@ -1,7 +1,6 @@
 package com.example.demo;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,10 +32,8 @@ class EntityUnitTest {
     private Appointment a4;
     private Appointment a5;
 
-    @BeforeEach
+    @BeforeEach // Initializing all instances
     public void setUp() {
-        // Inicialización de datos de prueba antes de cada prueba
-
         d1 = new Doctor ("Perla", "Amalia", 24, "p.amalia@hospital.accwe");
         p1 = new Patient("Jose Luis", "Olaya", 37, "j.olaya@email.com");;
         r1 = new Room("Dermatology");
@@ -65,15 +62,22 @@ class EntityUnitTest {
         a5 = new Appointment(p1, d1, r1, startsAt5, finishesAt5);
     }
 
+    /**
+     * Here we are testing that we can successfully retrieve, modify and/or save information to the database.
+     * Method 'persistAndFlush' from TestEntitiyManager, stores an entity (such as Doctor, Patient or Room) to the
+     * database and ensures that the changes are applied. Then we use the 'find' method to search for the entity
+     * based on its ID (or name in the case of 'Room').
+     */
+
     @Test
-    void testGetDoctorId() {
+    void shouldGetDoctorId() {
         Doctor savedDoctor = entityManager.persistAndFlush(d1);
         Doctor retrievedDoctor = entityManager.find(Doctor.class, savedDoctor.getId());
         assertThat(retrievedDoctor.getId()).isEqualTo(d1.getId());
     }
 
     @Test
-    void testSetDoctorId() {
+    void shouldSetDoctorId() {
         Doctor savedDoctor = entityManager.persistAndFlush(d1);
         Doctor retrievedDoctor = entityManager.find(Doctor.class, savedDoctor.getId());
         long previousId = retrievedDoctor.getId();
@@ -82,14 +86,14 @@ class EntityUnitTest {
     }
 
     @Test
-    void testGetPatientId() {
+    void shouldGetPatientId() {
         Patient savedPatient = entityManager.persistAndFlush(p1);
         Patient retrievedPatient = entityManager.find(Patient.class, savedPatient.getId());
         assertThat(retrievedPatient.getId()).isEqualTo(p1.getId());
     }
 
     @Test
-    void testSetPatientId() {
+    void shouldSetPatientId() {
         Patient savedPatient = entityManager.persistAndFlush(p1);
         Patient retrievedPatient = entityManager.find(Patient.class, savedPatient.getId());
         long previousId = retrievedPatient.getId();
@@ -98,8 +102,7 @@ class EntityUnitTest {
     }
 
     @Test
-    void testGetRoomName() {
-        // Persistir y recuperar una Room
+    void shouldGetRoomName() {
         Room savedRoom = entityManager.persistAndFlush(r1);
         Room retrievedRoom = entityManager.find(Room.class, savedRoom.getRoomName());
         assertThat(retrievedRoom).isEqualTo(r1);
@@ -107,7 +110,7 @@ class EntityUnitTest {
     }
 
     @Test
-    void testRoomConstructorSinArgs() {
+    void shouldCreateRoom() {
         Room room = new Room();
         assertThat(room).isNotNull();
     }
@@ -119,14 +122,14 @@ class EntityUnitTest {
     }
 
     @Test
-    void testGetAppointmentId() {
+    void shouldGetAppointmentId() {
         Appointment savedAppointment = entityManager.persistAndFlush(a1);
         Appointment retrievedAppointment = entityManager.find(Appointment.class, savedAppointment.getId());
         assertThat(retrievedAppointment.getId()).isEqualTo(a1.getId());
     }
 
     @Test
-    void testSetAppointment() {
+    void shouldSetAppointment() {
         Appointment savedAppointment = entityManager.persistAndFlush(a2);
         Appointment retrievedAppointment = entityManager.find(Appointment.class, savedAppointment.getId());
         long previousId = retrievedAppointment.getId();
@@ -135,7 +138,7 @@ class EntityUnitTest {
     }
 
     @Test
-    void testAppointmentSetRoom() {
+    void shouldSetRoomInAppointment() {
         Appointment savedAppointment = entityManager.persistAndFlush(a3);
         Appointment retrievedAppointment = entityManager.find(Appointment.class, savedAppointment.getId());
         Room r2 = new Room("Traumatology");
@@ -144,7 +147,7 @@ class EntityUnitTest {
     }
 
     @Test
-    void testAppointmentSetDoctor() {
+    void shouldSetDoctorInAppointment() {
         Appointment savedAppointment = entityManager.persistAndFlush(a4);
         Appointment retrievedAppointment = entityManager.find(Appointment.class, savedAppointment.getId());
         Doctor d2 = new Doctor ("Miren", "Iniesta", 24, "m.iniesta@hospital.accwe");
@@ -155,7 +158,7 @@ class EntityUnitTest {
     }
 
     @Test
-    void testAppointmentSetPatient() {
+    void shouldSetPatientInAppointment() {
         Appointment savedAppointment = entityManager.persistAndFlush(a5);
         Appointment retrievedAppointment = entityManager.find(Appointment.class, savedAppointment.getId());
         Patient p2 = new Patient("Paulino", "Antunez", 37, "p.antunez@email.com");
@@ -166,7 +169,7 @@ class EntityUnitTest {
     }
 
     @Test
-    void testAppointmentSetStartsAt() {
+    void shouldSetStartsAtInAppointment() {
         Appointment savedAppointment = entityManager.persistAndFlush(a1);
         Appointment retrievedAppointment = entityManager.find(Appointment.class, savedAppointment.getId());
         LocalDateTime previousStartTime = retrievedAppointment.getStartsAt();
@@ -175,7 +178,7 @@ class EntityUnitTest {
     }
 
     @Test
-    void testAppointmentSetFinishesAt() {
+    void shouldSetFinishesAtInAppointment() {
         Appointment savedAppointment = entityManager.persistAndFlush(a3);
         Appointment retrievedAppointment = entityManager.find(Appointment.class, savedAppointment.getId());
         LocalDateTime previousFinishTime = retrievedAppointment.getFinishesAt();
@@ -184,28 +187,28 @@ class EntityUnitTest {
     }
 
     @Test
-    void testAppointmentDoesNotOverlap() {
+    void appointmentShouldNotOverlap() {
         entityManager.persistAndFlush(a4);
         boolean overlaps = a4.overlaps(a5);
         assertThat(overlaps).isFalse();
     }
 
-    @Test // Testing cases 1-2 for 'overlaps' method
-    void testAppointmentOverlaps1() {
+    @Test // Testing cases 1-2 for Appointment 'overlaps' method
+    void appointmentShouldOverlap() {
         entityManager.persistAndFlush(a1);
         boolean overlaps = a1.overlaps(a2);
         assertThat(overlaps).isTrue();
     }
 
-    @Test // Testing case 3 for 'overlaps' method
-    void testAppointmentOverlaps2() {
+    @Test // Testing case 3 for Appointment 'overlaps' method
+    void appointmentShouldOverlap2() {
         entityManager.persistAndFlush(a1);
         boolean overlaps = a1.overlaps(a3);
         assertThat(overlaps).isTrue();
     }
 
-    @Test // Testing case 4 for 'overlaps' method
-    void testAppointmentOverlaps3() {
+    @Test // Testing case 4 for Appointment 'overlaps' method
+    void appointmentShouldOverlap3() {
         entityManager.persistAndFlush(a2);
         boolean overlaps = a2.overlaps(a4);
         assertThat(overlaps).isTrue();
