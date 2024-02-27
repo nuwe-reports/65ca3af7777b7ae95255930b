@@ -3,7 +3,6 @@ package com.example.demo.controllers;
 import com.example.demo.repositories.*;
 import com.example.demo.entities.*;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -53,14 +52,14 @@ public class AppointmentController {
 
     @PostMapping("/appointment")
     public ResponseEntity<?> createAppointment(@RequestBody Appointment appointment) {
-
-        // Checks if the duration of the appointment is at least 5 minutes. Else, will return a "Bad Request" response.
-        if (Duration.between(appointment.getStartsAt(), appointment.getFinishesAt()).toMinutes() < 5) {
-            return new ResponseEntity<>("La duración de la cita debe ser al menos de 5 minutos", HttpStatus.BAD_REQUEST);
+        // Checks that the start time is before the finish time. Else, will return a "Bad Request" response.
+        if (!appointment.getStartsAt().isBefore(appointment.getFinishesAt())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else if (isAppointmentOverlap(appointment)) {
             // Verifies any possible overlapping. If there is, it returns a "Not Acceptable" response.
-            return new ResponseEntity<>("La cita se superpone con otra cita existente", HttpStatus.NOT_ACCEPTABLE);
-        } else { // If everything is correct, it creates the appointment and returns an "OK" response.
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        } else {
+            // If everything is correct, it creates the appointment and returns an "OK" response.
             Appointment createdAppointment = appointmentRepository.save(appointment);
             return new ResponseEntity<>(createdAppointment, HttpStatus.OK);
         }
