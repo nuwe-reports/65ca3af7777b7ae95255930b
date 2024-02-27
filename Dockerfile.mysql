@@ -1,0 +1,9 @@
+FROM mysql:latest as mysql
+ENV MYSQL_ROOT_PASSWORD=root
+ENV MYSQL_DATABASE=accwe-hospital
+ENV MYSQL_USER=admin
+ENV MYSQL_PASSWORD=a.v3ry.s3cur3.p455w0rd
+COPY ./db-scripts/ /docker-entrypoint-initdb.d/
+FROM mysql
+EXPOSE 3306
+CMD ["mysqld"]
